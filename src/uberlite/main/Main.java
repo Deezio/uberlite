@@ -12,6 +12,10 @@ public class Main {
         List<User> users = new ArrayList<>();
         Ride ride = new Ride();
         Map<Integer,Ride> rides=new HashMap<>();
+        Map<Integer,User> usesrs=new HashMap<>();
+        
+        int usercount=1;
+        
         
         Random r=new Random();
         // Initialize the drivers and cars lists
@@ -21,6 +25,8 @@ public class Main {
         service.setUserDAO(userDAO);
         DriverDAO driverDAO = new DriverDAOImpl();
         service.setDriverDAO(driverDAO);
+        
+        Validations validation=new Validations();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -40,24 +46,22 @@ public class Main {
             switch (choice) {
                 case 1:
                     // Request a ride
-                    System.out.print("Enter your name: ");
-                    String userName = scanner.nextLine();
-
-                    System.out.print("Enter your phone number: ");
-                    String userPhone = scanner.nextLine();
-
-                    System.out.print("Enter your email address: ");
-                    String userEmail = scanner.nextLine();
-
-                    System.out.print("Enter your password: ");
-                    String userPassword = scanner.nextLine();
-
-                    User user = new User();
-                    user.setName(userName);
-                    user.setPhoneNo(userPhone);
-                    user.setEmail(userEmail);
-                    user.setPassword(userPassword);
-
+                    System.out.println("Do you have a user id y/n");
+                    if(!scanner.nextLine().equals("y")) {
+                    	System.out.println("Please register as a user");
+                    }else {
+                    	System.out.println("enter your user Id");
+                    	int id=scanner.nextInt();
+                    	if(!usesrs.containsKey(id)) {
+                    		System.out.println("invalid User ID");
+                    		break;
+                    	}
+                    	
+                    	User user=usesrs.get(id);
+                    	if(user.getIsriding()==true) {
+                    		System.out.println("complete your current ride ");
+                    		break;
+                    	}
                     System.out.print("Enter the starting longitude: ");
                     double startLongitude = scanner.nextDouble();
 
@@ -147,6 +151,7 @@ public class Main {
 
                     service.requestRide(user, startLocation, endLocation, rideCategory, paymentMethod);
                     ride.getDriver().setAvailable(false);
+                    ride.getUser().setIsriding(true);
                     
                     
 
@@ -164,6 +169,7 @@ public class Main {
                     System.out.println("Ride category: " + ride.getRideCategory().getName());
                     System.out.println("Ride fare: " +ride.getRideCategory().calculateFare(ride));
                     System.out.println("Payment method: " + ride.getPaymentMethod());
+                    }
                     break;
 
                 case 2:
@@ -187,11 +193,27 @@ public class Main {
 
                 case 3:
                     // Register as a user
-                    System.out.print("Enter your name: ");
+                	System.out.print("Enter your name: ");
                     String name = scanner.nextLine();
 
+//                    System.out.print("Enter your phone number: ");
+//                    String phoneNo = scanner.nextLine();
+                    
+                    String phoneNo=null;
+                    boolean isValidNumber = false;
+
+                    while (!isValidNumber) {
+                    	
                     System.out.print("Enter your phone number: ");
-                    String phoneNo = scanner.nextLine();
+                     String userPhone = scanner.nextLine();
+                    isValidNumber = validation.validatePhoneNumber(userPhone);
+
+                    if (isValidNumber) {
+                    } else {
+                        System.out.println("Invalid phone number format.");
+                    }
+                    
+                    } 
 
                     System.out.print("Enter your email address: ");
                     String email = scanner.nextLine();
@@ -206,30 +228,78 @@ public class Main {
                     newUser.setPassword(password);
 
                     service.registerUser(newUser);
+                    
 
-                    System.out.println("User registered successfully!");
+                    System.out.println("User registered successfully with ID :: "+ usercount);
+                    usesrs.put(usercount++, newUser);
                     break;
 
                 case 4:
                     // Register as a driver
-                    System.out.print("Enter your name: ");
-                    String driverName = scanner.nextLine();
+                	 System.out.print("Enter your name: ");
+                     String driverName = scanner.nextLine();
 
-                    System.out.print("Enter your phone number: ");
-                    String driverPhone = scanner.nextLine();
+//                     System.out.print("Enter your phone number: ");
+//                     String driverPhone = scanner.nextLine();
+                     
+                     String driverPhone=null;
+                     boolean isValidDriverNumber = false;
 
-                    System.out.print("Enter your email address: ");
-                    String driverEmail = scanner.nextLine();
+                     while (!isValidDriverNumber) {
+                     	
+                     System.out.print("Enter your phone number: ");
+                     driverPhone = scanner.nextLine();
+                     isValidDriverNumber = validation.validatePhoneNumber(driverPhone);
 
-                    System.out.print("Enter your password: ");
-                    String driverPassword = scanner.nextLine();
+                     if (isValidDriverNumber) {
+                         
+                     } else {
+                         System.out.println("Invalid phone number format.");
+                     }
+                     
+                     } 
 
-                    System.out.print("Enter your car model: ");
-                    String carModel = scanner.nextLine();
+                     
+                     String driverEmail=null;
+                     boolean isValidDriverEmail = false;
 
-                    System.out.print("Enter your car license plate: ");
-                    String carLicensePlate = scanner.nextLine();
+                     while (!isValidDriverEmail) {
+                     	 System.out.print("Enter your email address: ");
+                          driverEmail = scanner.nextLine();
+                         
+                          isValidDriverEmail = validation.validateEmail(driverEmail);
+
+                         if (isValidDriverEmail) {
+                         } else {
+                             System.out.println("Invalid email address format.");
+                         }
+                     }
                     
+
+                     System.out.print("Enter your password: ");
+                     String driverPassword = scanner.nextLine();
+
+                     System.out.print("Enter your car model: ");
+                     String carModel = scanner.nextLine();
+
+                     
+//                     System.out.print("Enter your car license plate: ");
+//                     String carLicensePlate = scanner.nextLine();
+                     String carLicensePlate=null;
+                     boolean isValidLicensePlate = false;
+
+                     while (!isValidLicensePlate) {
+                         System.out.print("Enter your car license plate: ");
+                         carLicensePlate = scanner.nextLine();
+                         
+                         // Perform license plate validation
+                         isValidLicensePlate = validation.validateLicensePlate(carLicensePlate);
+
+                         if (isValidLicensePlate) {
+                         } else {
+                             System.out.println("Invalid license plate format. Please try again.");
+                         }
+                     }
                     System.out.print("Enter your car cpacity: ");
                     Integer capacity = scanner.nextInt();
                     

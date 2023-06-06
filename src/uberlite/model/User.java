@@ -4,12 +4,20 @@ public class User {
 	
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", phoneNo=" + phoneNo + ", email=" + email + ", password=" + password + "]";
+		return "User [name=" + name + ", phoneNo=" + phoneNo + ", email=" + email + ", password=" + password
+				+ ", isriding=" + isriding + "]";
 	}
 	private String name;
     private String phoneNo;
     private String email;
     private String password;
+    private Boolean isriding=false;
+	public Boolean getIsriding() {
+		return isriding;
+	}
+	public void setIsriding(Boolean isriding) {
+		this.isriding = isriding;
+	}
 	public String getName() {
 		return name;
 	}

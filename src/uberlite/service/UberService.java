@@ -87,6 +87,7 @@ public class UberService {
         
         // Update the driver's and car's availability
         ride.getDriver().setAvailable(true);
+        ride.getUser().setIsriding(false);
         
         
         // Update the user and driver records with the completed ride
